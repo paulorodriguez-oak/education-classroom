@@ -4,13 +4,10 @@ $('.column button .card').on('click', function () {
     let nextMenu = this.getAttribute('data');
 
     if (nextMenu === 'proxy') {
-        if (!config['proxy']) {
-            $('#disabled').showModal();
-            return;
-        }
+        // Reemplazado: Usar DuckDuckGo en lugar del proxy
         $('#everything-else').fadeOut(300, () => {
             $('#page-loader').fadeIn(200);
-            $('#page-loader iframe').attr('src', config['proxyPath'] || '/proxy');
+            $('#page-loader iframe').attr('src', 'https://duckduckgo.com');
             $('#page-loader iframe')[0].focus();
         });
         currentMenu = $('#page-loader');
@@ -407,15 +404,15 @@ const sequences = [
   }
 
   /**
-function toggleStar(event, star) {
-    event.preventDefault();
-    event.stopPropagation();
-    star.classList.toggle('filled');
-}
- * Refreshes the current page by reloading it.
- *
- * @return {void}
- */
+  function toggleStar(event, star) {
+      event.preventDefault();
+      event.stopPropagation();
+      star.classList.toggle('filled');
+  }
+   * Refreshes the current page by reloading it.
+   *
+   * @return {void}
+   */
   function refreshPage() {
       const oldUrl = $('#page-loader iframe').attr('src');
       console.log(oldUrl);
@@ -603,285 +600,285 @@ function toggleStar(event, star) {
   }
 
 
-actions.forEach((action) => {
-    action.addEventListener('change', () => {
-        slot = action.parentNode.id;
-        if (!keyConfig[slot]) {
-            keyConfig[slot] = {};
-        }
-        keyConfig[slot]["slot-action"] = action.value;
-        localStorage.setItem('keyConfig', JSON.stringify(keyConfig));
-    });
-});
+  actions.forEach((action) => {
+      action.addEventListener('change', () => {
+          slot = action.parentNode.id;
+          if (!keyConfig[slot]) {
+              keyConfig[slot] = {};
+          }
+          keyConfig[slot]["slot-action"] = action.value;
+          localStorage.setItem('keyConfig', JSON.stringify(keyConfig));
+      });
+  });
 
-keySlots.forEach((slot) => {
-    slot.addEventListener('click', () => {
-        slot.textContent = 'Press any key';
+  keySlots.forEach((slot) => {
+      slot.addEventListener('click', () => {
+          slot.textContent = 'Press any key';
 
-        // Add a one-time event listener to capture the key press
-        const keyPressHandler = (event) => {
-            slot.textContent = event.key;
-            document.removeEventListener('keydown', keyPressHandler);
-            parSlot = event.target.parentNode.id;
-            if (!keyConfig[parSlot]) {
-                keyConfig[parSlot] = {};
+          // Add a one-time event listener to capture the key press
+          const keyPressHandler = (event) => {
+              slot.textContent = event.key;
+              document.removeEventListener('keydown', keyPressHandler);
+              parSlot = event.target.parentNode.id;
+              if (!keyConfig[parSlot]) {
+                  keyConfig[parSlot] = {};
+              }
+              key = event.target.className.replace(/ /g, "-");
+              keyConfig[parSlot ][key] = event.key;
+              localStorage.setItem('keyConfig', JSON.stringify(keyConfig));
+          };
+
+          document.addEventListener('keydown', keyPressHandler);
+      });
+  });
+
+  var pressedKeys = {};
+
+
+  function onKeyRelease(event) {
+      var key = event.key.toLowerCase();
+      pressedKeys[key] = false;
+  }
+
+  function onKeyPress(event) {
+      var key = event.key.toLowerCase();
+      pressedKeys[key] = true
+      for (var slot in keyConfig) {
+        if (keyConfig.hasOwnProperty(slot)) {
+          // Check if the slot has configurations for key-1, key-2, and action
+          if (
+            keyConfig[slot]["keySlot-1"] &&
+            keyConfig[slot]["keySlot-1"] &&
+            keyConfig[slot]["slot-action"]
+          ) {
+            // Check if the pressed keys match the configured keys
+            var keyPressed = event.key.toLowerCase();
+            var key1Config = keyConfig[slot]["keySlot-1"].toLowerCase();
+            var key2Config = keyConfig[slot]["keySlot-2"].toLowerCase();
+            var key3Config = (keyConfig[slot]["keySlot-3"] || "").toLowerCase(); //  case where key-3 might not exist
+            if (pressedKeys[key1Config] && pressedKeys[key2Config] && ((key3Config) ? pressedKeys[key3Config] : true)) {
+              eval(keyConfig[slot]["slot-action"]);
             }
-            key = event.target.className.replace(/ /g, "-");
-            keyConfig[parSlot ][key] = event.key;
-            localStorage.setItem('keyConfig', JSON.stringify(keyConfig));
-        };
-
-        document.addEventListener('keydown', keyPressHandler);
-    });
-});
-
-var pressedKeys = {};
-
-
-function onKeyRelease(event) {
-    var key = event.key.toLowerCase();
-    pressedKeys[key] = false;
-}
-
-function onKeyPress(event) {
-    var key = event.key.toLowerCase();
-    pressedKeys[key] = true
-    for (var slot in keyConfig) {
-      if (keyConfig.hasOwnProperty(slot)) {
-        // Check if the slot has configurations for key-1, key-2, and action
-        if (
-          keyConfig[slot]["keySlot-1"] &&
-          keyConfig[slot]["keySlot-1"] &&
-          keyConfig[slot]["slot-action"]
-        ) {
-          // Check if the pressed keys match the configured keys
-          var keyPressed = event.key.toLowerCase();
-          var key1Config = keyConfig[slot]["keySlot-1"].toLowerCase();
-          var key2Config = keyConfig[slot]["keySlot-2"].toLowerCase();
-          var key3Config = (keyConfig[slot]["keySlot-3"] || "").toLowerCase(); //  case where key-3 might not exist
-          if (pressedKeys[key1Config] && pressedKeys[key2Config] && ((key3Config) ? pressedKeys[key3Config] : true)) {
-            eval(keyConfig[slot]["slot-action"]);
           }
         }
       }
     }
+
+  document.addEventListener('keydown', onKeyPress);
+  document.addEventListener('keyup', onKeyRelease);
+
+  const defaultColorSettings = {
+      bg: '#202020',
+      'block-color': '#2b2b2b',
+      'button-color': '#373737',
+      'games-color': '#373737a6',
+      'hover-color': '#3c3c3c',
+      'scrollbar-color': '#434343',
+      'scroll-track-color': '#111',
+      'font-color': '#dcddde',
+  };
+
+  const colorSettings = JSON.parse(localStorage.getItem('colorSettings')) || defaultColorSettings;
+
+  // Set input values
+  Object.keys(colorSettings).forEach((key) => {
+      const inputElement = document.getElementById(key);
+      if (inputElement) {
+          inputElement.value = colorSettings[key];
+      }
+  });
+
+  // Set CSS variables
+  Object.entries(colorSettings).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(`--${key}`, value);
+  });
+
+  // Save changes button event listener
+  function saveColorChanges() {
+      const inputs = document.querySelectorAll('input[type="color"]');
+      const newColorSettings = {};
+
+      inputs.forEach((input) => {
+          newColorSettings[input.id] = input.value;
+      });
+
+      // Save to local storage
+      localStorage.setItem('colorSettings', JSON.stringify(newColorSettings));
+
+      // Set CSS variables
+      Object.entries(newColorSettings).forEach(([key, value]) => {
+          document.documentElement.style.setProperty(`--${key}`, value);
+      });
   }
 
-document.addEventListener('keydown', onKeyPress);
-document.addEventListener('keyup', onKeyRelease);
+  // Restore defaults button event listener
+  function restoreColorChanges() {
+      // Reset to default values
+      localStorage.removeItem('colorSettings');
 
-const defaultColorSettings = {
-    bg: '#202020',
-    'block-color': '#2b2b2b',
-    'button-color': '#373737',
-    'games-color': '#373737a6',
-    'hover-color': '#3c3c3c',
-    'scrollbar-color': '#434343',
-    'scroll-track-color': '#111',
-    'font-color': '#dcddde',
-};
+      // Set CSS variables
+      Object.entries(colorSettings).forEach(([key, value]) => {
+          document.documentElement.style.setProperty(`--${key}`, value);
+      });
+  }
 
-const colorSettings = JSON.parse(localStorage.getItem('colorSettings')) || defaultColorSettings;
+  function randomGame() {
+      const gameLinks = document.querySelectorAll('#gamesList li');
+      const randomIndex = Math.floor(Math.random() * gameLinks.length);
+      const randomGameLink = gameLinks[randomIndex];
+      // window.location.href = randomGameLink.getAttribute('url');
+      const url = randomGameLink.getAttribute('url');
+      inGame = true;
+      $('#everything-else').fadeOut();
+      $('#page-loader').fadeIn();
+      $('#page-loader iframe').attr('src', url);
+      $('#page-loader iframe')[0].focus();
+      currentMenu = $('#page-loader');
+  }
 
-// Set input values
-Object.keys(colorSettings).forEach((key) => {
-    const inputElement = document.getElementById(key);
-    if (inputElement) {
-        inputElement.value = colorSettings[key];
-    }
-});
+  const preferencesDefaults = {
+      cloak: true,
+      cloakUrl: 'https://classroom.google.com',
+      mask: true,
+      maskTitle: 'Home',
+      maskIconUrl: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
+      background: true,
+  };
 
-// Set CSS variables
-Object.entries(colorSettings).forEach(([key, value]) => {
-    document.documentElement.style.setProperty(`--${key}`, value);
-});
+  if (localStorage.getItem('preferences') == null) {
+      localStorage.setItem('preferences', JSON.stringify(preferencesDefaults));
+  }
+  const preferences = JSON.parse(localStorage.getItem('preferences'));
+  const cloakCheckbox = document.getElementById('cloakCheckboxInput');
+  const backgroundCheckbox = document.getElementById('backgroundCheckboxInput');
+  const cloakUrl = document.getElementById('cloakUrlInput');
+  const maskCheckbox = document.getElementById('maskCheckboxInput');
+  const maskTitle = document.getElementById('maskTitleInput');
+  const maskIcon = document.getElementById('maskIconInput');
+  cloakCheckbox.checked = preferences.cloak;
+  cloakUrl.value = preferences.cloakUrl;
+  maskCheckbox.checked = preferences.mask;
+  maskTitle.value = preferences.maskTitle;
+  maskIcon.value = preferences.maskIconUrl;
+  backgroundCheckbox.checked = preferences.background;
 
-// Save changes button event listener
-function saveColorChanges() {
-    const inputs = document.querySelectorAll('input[type="color"]');
-    const newColorSettings = {};
+  const presets = {
+      classroom: {
+          url: 'https://classroom.google.com/',
+          title: 'Home',
+          icon: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
+      },
+      drive: {
+          url: 'https://drive.google.com/',
+          title: 'My Drive - Google Drive',
+          icon: 'https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png',
+      },
+      mail: {
+          url: 'https://mail.google.com/',
+          title: 'Inbox (12) - Google Mail',
+          icon: 'https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_512dp.png',
+      },
+      canvas: {
+          url: 'https://www.instructure.com/',
+          title: 'Dashboard',
+          icon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico',
+      },
+  };
 
-    inputs.forEach((input) => {
-        newColorSettings[input.id] = input.value;
-    });
+  function setPreset(object) {
+      preferences.cloakUrl = object.url;
+      preferences.maskTitle = object.title;
+      preferences.maskIconUrl = object.icon;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+      alert('Preset will take place upon next opening!');
+  }
 
-    // Save to local storage
-    localStorage.setItem('colorSettings', JSON.stringify(newColorSettings));
+  function updatePreset() {
+      setPreset(presets[document.getElementById('presets').value]);
+  }
 
-    // Set CSS variables
-    Object.entries(newColorSettings).forEach(([key, value]) => {
-        document.documentElement.style.setProperty(`--${key}`, value);
-    });
-}
+  if (preferences.cloak && window.location.href == window.top.location.href) {
+      if (popupsAllowed()) {
+          makecloak();
+      } else {
+          currentMenu.fadeOut(300, () => {
+              $('.cloaklaunch').fadeIn(200);
+          });
+          currentMenu = $('.cloaklaunch');
+          document.addEventListener('click', (event) => {
+              if (event.target.id == 'disableCloak') {
+                  $('.cloaklaunch').fadeOut(200);
+                  setTimeout(returnHome, 200);
+                  return;
+              }
+              if (event.target.className != 'cloaklaunch' && event.target.className != 'cloaker') return;
+              event.preventDefault();
+              makecloak();
+          });
+      }
+  }
 
-// Restore defaults button event listener
-function restoreColorChanges() {
-    // Reset to default values
-    localStorage.removeItem('colorSettings');
+  maskCheckbox.addEventListener('change', function () {
+      preferences.mask = maskCheckbox.checked;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+  });
 
-    // Set CSS variables
-    Object.entries(colorSettings).forEach(([key, value]) => {
-        document.documentElement.style.setProperty(`--${key}`, value);
-    });
-}
+  cloakCheckbox.addEventListener('change', function () {
+      preferences.cloak = cloakCheckbox.checked;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+  });
 
-function randomGame() {
-    const gameLinks = document.querySelectorAll('#gamesList li');
-    const randomIndex = Math.floor(Math.random() * gameLinks.length);
-    const randomGameLink = gameLinks[randomIndex];
-    // window.location.href = randomGameLink.getAttribute('url');
-    const url = randomGameLink.getAttribute('url');
-    inGame = true;
-    $('#everything-else').fadeOut();
-    $('#page-loader').fadeIn();
-    $('#page-loader iframe').attr('src', url);
-    $('#page-loader iframe')[0].focus();
-    currentMenu = $('#page-loader');
-}
+  backgroundCheckbox.addEventListener('change', function () {
+      preferences.background = backgroundCheckbox.checked;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+      inGame = !preferences.background;
+  });
 
-const preferencesDefaults = {
-    cloak: true,
-    cloakUrl: 'https://classroom.google.com',
-    mask: true,
-    maskTitle: 'Home',
-    maskIconUrl: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
-    background: true,
-};
+  /* if it is wanted to save on input change wather than submission
+  document.querySelector('.text-field').addEventListener('change', function () {
+      preferences.maskTitle = maskTitle.value;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+  });
+  */
 
-if (localStorage.getItem('preferences') == null) {
-    localStorage.setItem('preferences', JSON.stringify(preferencesDefaults));
-}
-const preferences = JSON.parse(localStorage.getItem('preferences'));
-const cloakCheckbox = document.getElementById('cloakCheckboxInput');
-const backgroundCheckbox = document.getElementById('backgroundCheckboxInput');
-const cloakUrl = document.getElementById('cloakUrlInput');
-const maskCheckbox = document.getElementById('maskCheckboxInput');
-const maskTitle = document.getElementById('maskTitleInput');
-const maskIcon = document.getElementById('maskIconInput');
-cloakCheckbox.checked = preferences.cloak;
-cloakUrl.value = preferences.cloakUrl;
-maskCheckbox.checked = preferences.mask;
-maskTitle.value = preferences.maskTitle;
-maskIcon.value = preferences.maskIconUrl;
-backgroundCheckbox.checked = preferences.background;
+  document.getElementById('cloakUrlSubmit').addEventListener('click', function () {
+      preferences.cloakUrl = cloakUrl.value;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+      alert('Submitted! Change will take place upon refresh');
+  });
 
-const presets = {
-    classroom: {
-        url: 'https://classroom.google.com/',
-        title: 'Home',
-        icon: 'https://ssl.gstatic.com/classroom/ic_product_classroom_32.png',
-    },
-    drive: {
-        url: 'https://drive.google.com/',
-        title: 'My Drive - Google Drive',
-        icon: 'https://ssl.gstatic.com/images/branding/product/2x/hh_drive_36dp.png',
-    },
-    mail: {
-        url: 'https://mail.google.com/',
-        title: 'Inbox (12) - Google Mail',
-        icon: 'https://www.gstatic.com/images/branding/product/2x/gmail_2020q4_512dp.png',
-    },
-    canvas: {
-        url: 'https://www.instructure.com/',
-        title: 'Dashboard',
-        icon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico',
-    },
-};
+  document.getElementById('maskTitleSubmit').addEventListener('click', function () {
+      preferences.maskTitle = maskTitle.value;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+      alert('Submitted! Change will take place upon refresh');
+  });
 
-function setPreset(object) {
-    preferences.cloakUrl = object.url;
-    preferences.maskTitle = object.title;
-    preferences.maskIconUrl = object.icon;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-    alert('Preset will take place upon next opening!');
-}
+  document.getElementById('maskIconSubmit').addEventListener('click', function () {
+      preferences.maskIconUrl = maskIcon.value;
+      localStorage.setItem('preferences', JSON.stringify(preferences));
+      alert('Submitted! Change will take place upon refresh');
+  });
 
-function updatePreset() {
-    setPreset(presets[document.getElementById('presets').value]);
-}
+  document.getElementById('download').addEventListener('click', function () {
+      downloadMainSave();
+  });
 
-if (preferences.cloak && window.location.href == window.top.location.href) {
-    if (popupsAllowed()) {
-        makecloak();
-    } else {
-        currentMenu.fadeOut(300, () => {
-            $('.cloaklaunch').fadeIn(200);
-        });
-        currentMenu = $('.cloaklaunch');
-        document.addEventListener('click', (event) => {
-            if (event.target.id == 'disableCloak') {
-                $('.cloaklaunch').fadeOut(200);
-                setTimeout(returnHome, 200);
-                return;
-            }
-            if (event.target.className != 'cloaklaunch' && event.target.className != 'cloaker') return;
-            event.preventDefault();
-            makecloak();
-        });
-    }
-}
+  document.getElementById('upload').addEventListener('click', function () {
+      uploadMainSave();
+  });
 
-maskCheckbox.addEventListener('change', function () {
-    preferences.mask = maskCheckbox.checked;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-});
+  /* if (preferences.cloak && !localStorage.getItem("cloakTabOpened")){
+      if (window.top.location.href !== "about:blank"){
+          localStorage.setItem("cloakTabOpened", "true");
+          document.addEventListener("click", (event) => {event.preventDefault(); makecloak()});
+      }
+      makecloak();
 
-cloakCheckbox.addEventListener('change', function () {
-    preferences.cloak = cloakCheckbox.checked;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-});
+      window.addEventListener("beforeunload", () => {
+          localStorage.removeItem("cloakTabOpened");
+      });
+  } */
 
-backgroundCheckbox.addEventListener('change', function () {
-    preferences.background = backgroundCheckbox.checked;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-    inGame = !preferences.background;
-});
-
-/* if it is wanted to save on input change wather than submission
-document.querySelector('.text-field').addEventListener('change', function () {
-    preferences.maskTitle = maskTitle.value;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-});
-*/
-
-document.getElementById('cloakUrlSubmit').addEventListener('click', function () {
-    preferences.cloakUrl = cloakUrl.value;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-    alert('Submitted! Change will take place upon refresh');
-});
-
-document.getElementById('maskTitleSubmit').addEventListener('click', function () {
-    preferences.maskTitle = maskTitle.value;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-    alert('Submitted! Change will take place upon refresh');
-});
-
-document.getElementById('maskIconSubmit').addEventListener('click', function () {
-    preferences.maskIconUrl = maskIcon.value;
-    localStorage.setItem('preferences', JSON.stringify(preferences));
-    alert('Submitted! Change will take place upon refresh');
-});
-
-document.getElementById('download').addEventListener('click', function () {
-    downloadMainSave();
-});
-
-document.getElementById('upload').addEventListener('click', function () {
-    uploadMainSave();
-});
-
-/* if (preferences.cloak && !localStorage.getItem("cloakTabOpened")){
-    if (window.top.location.href !== "about:blank"){
-        localStorage.setItem("cloakTabOpened", "true");
-        document.addEventListener("click", (event) => {event.preventDefault(); makecloak()});
-    }
-    makecloak();
-
-    window.addEventListener("beforeunload", () => {
-        localStorage.removeItem("cloakTabOpened");
-    });
-} */
-
-if (preferences.mask) {
-    mask();
-}
+  if (preferences.mask) {
+      mask();
+  }
